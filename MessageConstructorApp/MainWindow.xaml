@@ -17,12 +17,42 @@
             </Grid>
             
             <Grid HorizontalAlignment="Stretch">
-                <xctk:WatermarkTextBox Name="CompanyAddress" FontSize="15" Width="260" Watermark="Капибарка" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <xctk:WatermarkTextBox Name="CompanyAddress" FontSize="15" Width="260" Watermark="Большая арбузовая, 15" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
                 <Label Content="Адрес компании" HorizontalAlignment="Left"  FontSize="15" />
             </Grid>
             
+            <Grid HorizontalAlignment="Stretch">
+                <DatePicker Name="LetterDate" FontSize="15" Width="260" Height="30" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Label Content="Дата отправления" HorizontalAlignment="Left"  FontSize="15" />
+            </Grid>
             
-            <Button Content="Press me" FontSize="25" Width = "100" Height = "100" Click = "GenerateDocument" />
+            <Grid HorizontalAlignment="Stretch">
+                <xctk:WatermarkTextBox Name="LetterTopic" FontSize="15" Width="260" Watermark="Закупка кокосов" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <Label Content="Тема письма" HorizontalAlignment="Left"  FontSize="15" />
+            </Grid>
+            
+            <Grid HorizontalAlignment="Stretch">
+                <xctk:WatermarkTextBox Name="LetterRecipient" FontSize="15" Width="260" Watermark="Баркин К.А." TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <Label Content="Получатель" HorizontalAlignment="Left"  FontSize="15" />
+            </Grid>
+            
+            <Grid HorizontalAlignment="Stretch">
+                <xctk:WatermarkTextBox Name="LetterText" FontSize="15" Width="260" Height="400" Watermark="" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <Label Content="Текст" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" />
+            </Grid>
+            
+            <Grid HorizontalAlignment="Stretch">
+                <xctk:WatermarkTextBox Name="LetterSender" FontSize="15" Width="260" Watermark="Арбузов К.П.." TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <Label Content="Отправитель" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" />
+            </Grid>
+            
+            <Grid HorizontalAlignment="Stretch">
+                <xctk:WatermarkTextBox Name="SenderPosition" FontSize="15" Width="260" Watermark="Арбузов К.П.." TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="Black" />
+                <Label Content="Должность" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" />
+            </Grid> 
+            
+           <!-- <Button Content="Press me" FontSize="25" Width = "100" Height = "100" Click = "GenerateDocument" /> -->
+            <Button Content="Save file" FontSize="15" Width="75" Height="25" Click="SaveButtonClick" />
 
         </StackPanel>
     </Grid>

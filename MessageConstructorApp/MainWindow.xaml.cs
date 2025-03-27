@@ -11,6 +11,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using Microsoft.Win32;
 
 namespace MessageConstructorApp;
 
@@ -19,6 +20,8 @@ namespace MessageConstructorApp;
 /// </summary>
 public partial class MainWindow : Window
 {
+    private string DocumentFilePath { get; set; } = "result.docx";
+    private string TemplateFilePath { get; set; } = "template.docx";
     public MainWindow()
     {
         InitializeComponent();
@@ -29,21 +32,25 @@ public partial class MainWindow : Window
         
     }
 
-    public void GenerateDocument(object sender, RoutedEventArgs e)
+    private void GenerateDocument()
     {
         try
         {
-            string templateFilePath = "template.docx";
-            string filepath = "capybara.docx";
-            File.Copy(templateFilePath, filepath);
 
-            if (!File.Exists(filepath))
+            if (!File.Exists(TemplateFilePath))
             {
                 MessageBox.Show("Шаблон документа не найден.");
                 return;
             }
+            if(File.Exists(DocumentFilePath))
+            {
+                File.Delete(DocumentFilePath);
+            }
+            
+            File.Copy(TemplateFilePath, DocumentFilePath, true);
 
-            using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(filepath, true))
+
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(DocumentFilePath, true))
             {
                 var body = wordDocument.MainDocumentPart.Document.Body;
 
@@ -65,33 +72,40 @@ public partial class MainWindow : Window
     {
         var headers = new Dictionary<string, string>
         {
-            { "{COMPANY_NAME}", CompanyNameTextBox.Text },
-            { "{COMPANY_ADDRESS}", CompanyAddress.Text },
+            { "{COMPANY_NAME}", string.IsNullOrEmpty(CompanyNameTextBox.Text) ? CompanyNameTextBox.Watermark.ToString()! : CompanyNameTextBox.Text },
+            { "{COMPANY_ADDRESS}", string.IsNullOrEmpty(CompanyAddress.Text) ? CompanyAddress.Watermark.ToString()! : CompanyAddress.Text },
+            { "{CURRENT_DATE}", LetterDate.SelectedDate?.ToString("dd.MM.yyyy") ?? DateTime.Now.ToString("dd.MM.yyyy") },
+            { "{LETTER_SUBJECT}", string.IsNullOrWhiteSpace(LetterTopic.Text) ? LetterTopic.Watermark.ToString()! : LetterTopic.Text },
+            { "{RECIPIENT_NAME}", string.IsNullOrWhiteSpace(LetterRecipient.Text) ? LetterRecipient.Watermark.ToString()! : LetterRecipient.Text },
+            { "{LETTER_BODY}", string.IsNullOrWhiteSpace(LetterText.Text) ? LetterText.Watermark.ToString()! : LetterText.Text },
+            { "{SENDER_NAME}", string.IsNullOrWhiteSpace(LetterSender.Text) ? LetterSender.Watermark.ToString()! : LetterSender.Text },
+            { "{SENDER_POSITION}", string.IsNullOrWhiteSpace(SenderPosition.Text) ? SenderPosition.Watermark.ToString()! : SenderPosition.Text }
         };
-
-        var text = document.InnerText;
-       /* foreach (var header in headers)
-        {
-            if (text.Contains(header.Key))
-            {
-                document.InnerText.Replace(header.Key, header.Value);
-            }
-        }*/
         
         foreach (var textElement in document.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>())
         {
-            // Для каждого текста проверяем на наличие заглушки
             foreach (var header in headers)
             {
                 if (textElement.Text.Contains(header.Key))
                 {
-                    // Заменяем текст внутри элемента
                     textElement.Text = textElement.Text.Replace(header.Key, header.Value);
                 }
             }
         }
+    }
+    protected void SaveButtonClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog()
+        {
+            Filter = "Word Documents (*.docx)|*.docx",
+            DefaultExt = "docx"
+        };
         
+        if (dialog.ShowDialog() == true)
+        {
+            DocumentFilePath = dialog.FileName;
+        }
         
-        
+        GenerateDocument();
     }
 }
